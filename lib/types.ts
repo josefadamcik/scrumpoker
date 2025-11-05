@@ -5,6 +5,20 @@ export interface Participant {
   nickname: string;
   vote: Card | null;
   joinedAt: number;
+  isConnected?: boolean;
+  lastSeen?: number;
+}
+
+export interface VoteRecord {
+  participantId: string;
+  nickname: string;
+  vote: Card;
+}
+
+export interface RoundHistory {
+  roundNumber: number;
+  revealedAt: number;
+  votes: VoteRecord[];
 }
 
 export interface Session {
@@ -13,6 +27,7 @@ export interface Session {
   participants: Record<string, Participant>;
   revealed: boolean;
   creatorId: string;
+  voteHistory?: RoundHistory[];
 }
 
 export const CARDS: Card[] = ['0', '1', '2', '3', '5', '8', '13', '21', '?', '☕'];

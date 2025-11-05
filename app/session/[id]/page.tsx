@@ -4,6 +4,7 @@ import { use, useEffect } from 'react';
 import { useSession } from '@/hooks/useSession';
 import { useParticipant } from '@/hooks/useParticipant';
 import { useRealtime } from '@/hooks/useRealtime';
+import { usePresence } from '@/hooks/usePresence';
 import { useSessionActions } from '@/hooks/useSessionActions';
 import { LoadingState } from '@/components/LoadingState';
 import { JoinForm } from '@/components/session/JoinForm';
@@ -12,6 +13,7 @@ import { ParticipantsList } from '@/components/session/ParticipantsList';
 import { VotingArea } from '@/components/session/VotingArea';
 import { CreatorControls } from '@/components/session/CreatorControls';
 import { ResultsStats } from '@/components/session/ResultsStats';
+import { VoteHistory } from '@/components/session/VoteHistory';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -31,6 +33,9 @@ export default function SessionPage({ params }: Props) {
 
   // Set up real-time subscription
   useRealtime(sessionId, hasJoined, setSession);
+
+  // Set up presence tracking
+  const { connectedParticipants } = usePresence(sessionId, participantId, nickname, hasJoined);
 
   // Initial session fetch
   useEffect(() => {
@@ -93,6 +98,7 @@ export default function SessionPage({ params }: Props) {
               revealed={session.revealed}
               votedCount={votedCount}
               totalCount={totalCount}
+              connectedParticipants={connectedParticipants}
             />
           </div>
 
@@ -117,6 +123,11 @@ export default function SessionPage({ params }: Props) {
             {/* Results Stats */}
             {session.revealed && votedCount > 0 && (
               <ResultsStats participants={participants} />
+            )}
+
+            {/* Vote History */}
+            {session.voteHistory && session.voteHistory.length > 0 && (
+              <VoteHistory history={session.voteHistory} />
             )}
           </div>
         </div>

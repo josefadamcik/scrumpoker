@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { VotingCard } from './VotingCard';
@@ -10,6 +11,20 @@ interface VotingAreaProps {
 }
 
 export function VotingArea({ revealed, currentVote, onVote }: VotingAreaProps) {
+  const [pendingVote, setPendingVote] = useState<CardType | null>(null);
+
+  // Clear pending state when server confirms the vote
+  useEffect(() => {
+    if (currentVote === pendingVote) {
+      setPendingVote(null);
+    }
+  }, [currentVote, pendingVote]);
+
+  const handleVote = (card: CardType | null) => {
+    setPendingVote(card);
+    onVote(card);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -23,8 +38,9 @@ export function VotingArea({ revealed, currentVote, onVote }: VotingAreaProps) {
               key={card}
               card={card}
               isSelected={currentVote === card}
+              isPending={pendingVote === card && currentVote !== card}
               disabled={revealed}
-              onSelect={() => onVote(card)}
+              onSelect={() => handleVote(card)}
             />
           ))}
         </div>
@@ -34,7 +50,7 @@ export function VotingArea({ revealed, currentVote, onVote }: VotingAreaProps) {
           <Button
             variant="secondary"
             className="w-full"
-            onClick={() => onVote(null)}
+            onClick={() => handleVote(null)}
           >
             Clear Vote
           </Button>
