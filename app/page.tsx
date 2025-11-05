@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 
 export default function Home() {
   const router = useRouter();
@@ -39,7 +41,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-md w-full mx-4">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+        <Card className="p-8">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
               🃏 Scrum Poker
@@ -51,7 +53,10 @@ export default function Home() {
 
           <form onSubmit={createSession} className="space-y-4">
             <div>
-              <label htmlFor="nickname" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="nickname"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Your nickname (or leave blank for random)
               </label>
               <input
@@ -64,13 +69,9 @@ export default function Home() {
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
-            >
+            <Button type="submit" disabled={loading} className="w-full">
               {loading ? 'Creating Session...' : 'Create New Session'}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
@@ -84,7 +85,7 @@ export default function Home() {
               <li>✓ Reset and start a new round</li>
             </ul>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
