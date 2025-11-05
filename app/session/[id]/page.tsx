@@ -2,8 +2,10 @@
 
 import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { supabaseClient } from '@/lib/supabase-client';
 import type { Session, Participant, Card } from '@/lib/types';
 import { CARDS } from '@/lib/types';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -145,12 +147,48 @@ export default function SessionPage({ params }: Props) {
     fetchSession();
   }, [sessionId]);
 
-  // Poll for updates
+  // Subscribe to real-time updates from Supabase
   useEffect(() => {
     if (!hasJoined) return;
 
-    const interval = setInterval(fetchSession, 2000);
-    return () => clearInterval(interval);
+    console.log('🔌 Setting up real-time subscription for session:', sessionId);
+
+    // Create a channel for this session
+    const channel: RealtimeChannel = supabaseClient
+      .channel(`session:${sessionId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'sessions',
+          filter: `id=eq.${sessionId}`,
+        },
+        (payload) => {
+          console.log('🔥 Real-time update received:', payload);
+
+          // Convert database row to Session type
+          const updated = payload.new as any;
+          if (updated) {
+            setSession({
+              id: updated.id,
+              createdAt: new Date(updated.created_at).getTime(),
+              participants: updated.participants,
+              revealed: updated.revealed,
+              creatorId: updated.creator_id,
+            });
+          }
+        }
+      )
+      .subscribe((status) => {
+        console.log('📡 Subscription status:', status);
+      });
+
+    // Cleanup subscription on unmount
+    return () => {
+      console.log('🔌 Cleaning up subscription');
+      supabaseClient.removeChannel(channel);
+    };
   }, [hasJoined, sessionId]);
 
   if (loading) {

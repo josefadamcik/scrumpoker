@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/redis';
+import { getSession } from '@/lib/supabase';
 
 export async function GET(
   request: Request,

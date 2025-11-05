@@ -1,12 +1,17 @@
 # 🃏 Scrum Poker
 
-A simple, serverless planning poker application for agile teams. Built with Next.js 15, TypeScript, and Upstash Redis.
+A simple, serverless planning poker application for agile teams. Built with Next.js 15, TypeScript, and Supabase Real-Time.
+
+> **📌 Note**: This is the **Supabase Real-Time experimental branch**.
+> For the production-ready version using Redis + polling, see the `main` branch.
+>
+> **Want to learn about real-time WebSocket subscriptions?** Check out [SUPABASE-SETUP.md](./SUPABASE-SETUP.md)
 
 ## Features
 
 - ✅ Create instant sessions with shareable links
 - ✅ Random nickname generation or custom nicknames
-- ✅ Real-time voting with polling updates
+- ✅ **Real-time voting with WebSocket subscriptions** (instant updates!)
 - ✅ Standard planning poker cards (0, 1, 2, 3, 5, 8, 13, 21, ?, ☕)
 - ✅ See who voted and who hasn't
 - ✅ Reveal votes and see statistics
@@ -20,7 +25,7 @@ A simple, serverless planning poker application for agile teams. Built with Next
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Database**: Upstash Redis (via Vercel Marketplace)
+- **Database**: Supabase (PostgreSQL + Real-Time)
 - **Deployment**: Vercel (serverless)
 
 ## Local Development
