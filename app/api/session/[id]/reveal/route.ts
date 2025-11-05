@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession, setSession } from '@/lib/redis';
-import { SESSION_TTL } from '@/lib/types';
+import { getSession, setSession } from '@/lib/supabase';
 
 export async function POST(
   request: Request,
@@ -18,7 +17,7 @@ export async function POST(
     }
 
     session.revealed = true;
-    await setSession(id, session, SESSION_TTL);
+    await setSession(id, session);
 
     return NextResponse.json({ success: true });
   } catch (error) {

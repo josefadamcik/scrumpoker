@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generateSessionId, generateParticipantId, generateRandomNickname } from '@/lib/utils';
-import { setSession } from '@/lib/redis';
+import { setSession } from '@/lib/supabase';
 import type { Session, Participant } from '@/lib/types';
-import { SESSION_TTL } from '@/lib/types';
 
 export async function POST(request: Request) {
   try {
@@ -31,7 +30,7 @@ export async function POST(request: Request) {
       creatorId,
     };
 
-    await setSession(sessionId, session, SESSION_TTL);
+    await setSession(sessionId, session);
 
     return NextResponse.json({
       sessionId,

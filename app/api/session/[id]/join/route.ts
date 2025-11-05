@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getSession, setSession } from '@/lib/redis';
+import { getSession, setSession } from '@/lib/supabase';
 import { generateParticipantId, generateRandomNickname } from '@/lib/utils';
 import type { Participant } from '@/lib/types';
-import { SESSION_TTL } from '@/lib/types';
 
 export async function POST(
   request: Request,
@@ -32,7 +31,7 @@ export async function POST(
     };
 
     session.participants[participantId] = participant;
-    await setSession(id, session, SESSION_TTL);
+    await setSession(id, session);
 
     return NextResponse.json({ participantId, nickname: finalNickname });
   } catch (error) {

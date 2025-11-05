@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getSession, setSession } from '@/lib/redis';
+import { getSession, setSession } from '@/lib/supabase';
 import type { Card } from '@/lib/types';
-import { CARDS, SESSION_TTL } from '@/lib/types';
+import { CARDS } from '@/lib/types';
 
 export async function POST(
   request: Request,
@@ -42,7 +42,7 @@ export async function POST(
     }
 
     session.participants[participantId].vote = vote;
-    await setSession(id, session, SESSION_TTL);
+    await setSession(id, session);
 
     return NextResponse.json({ success: true });
   } catch (error) {
