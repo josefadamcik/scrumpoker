@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
+import { checkBotId } from 'botid/server';
 import { generateSessionId, generateParticipantId, generateRandomNickname } from '@/lib/utils';
 import { setSession } from '@/lib/supabase';
 import type { Session, Participant } from '@/lib/types';
 
 export async function POST(request: Request) {
   try {
+    // Check for bot traffic
+    const { isBot } = await checkBotId();
+    if (isBot) {
+      return NextResponse.json(
+        { error: 'Unauthorized access' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json().catch(() => ({}));
     const { nickname } = body;
 
