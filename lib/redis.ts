@@ -1,7 +1,9 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 import type { Session } from './types';
 
-export const redis = kv;
+// Initialize Redis client from environment variables
+// These are automatically set when you connect Upstash Redis via Vercel Marketplace
+export const redis = Redis.fromEnv();
 
 export async function getSession(sessionId: string): Promise<Session | null> {
   try {
