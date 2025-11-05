@@ -131,18 +131,14 @@ export default function SessionPage({ params }: Props) {
 
   // Initialize
   useEffect(() => {
-    // Check if user already joined
+    // Check if user already joined this session
     const savedParticipantId = localStorage.getItem(`session_${sessionId}_participant`);
     const savedNickname = localStorage.getItem(`session_${sessionId}_nickname`);
-    const creatorId = localStorage.getItem(`session_${sessionId}_creator`);
 
     if (savedParticipantId && savedNickname) {
+      // User has joined before (either as creator or regular participant)
       setParticipantId(savedParticipantId);
       setNickname(savedNickname);
-      setHasJoined(true);
-    } else if (creatorId) {
-      // Auto-join as creator
-      setParticipantId(creatorId);
       setHasJoined(true);
     }
 
