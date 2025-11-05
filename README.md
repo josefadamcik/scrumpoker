@@ -2,7 +2,7 @@
 
 A simple, serverless planning poker application for agile teams. Built with Next.js 15, TypeScript, and Supabase Real-Time.
 
-> **📌 Note**: This is the **Supabase Real-Time experimental branch** with WebSocket-based instant updates.
+> **📌 Note**: This uses **Supabase Real-Time** with WebSocket-based instant updates. For the polling version with Upstash Redis, see the [`serverless-polling`](https://github.com/josefadamcik/scrumpoker/tree/serverless-polling) branch.
 
 ## Features
 
