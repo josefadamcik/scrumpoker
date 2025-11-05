@@ -2,10 +2,7 @@
 
 A simple, serverless planning poker application for agile teams. Built with Next.js 15, TypeScript, and Supabase Real-Time.
 
-> **📌 Note**: This is the **Supabase Real-Time experimental branch**.
-> For the production-ready version using Redis + polling, see the `main` branch.
->
-> **Want to learn about real-time WebSocket subscriptions?** Check out [SUPABASE-SETUP.md](./SUPABASE-SETUP.md)
+> **📌 Note**: This is the **Supabase Real-Time experimental branch** with WebSocket-based instant updates.
 
 ## Features
 
@@ -28,141 +25,103 @@ A simple, serverless planning poker application for agile teams. Built with Next
 - **Database**: Supabase (PostgreSQL + Real-Time)
 - **Deployment**: Vercel (serverless)
 
-## Local Development
+## Setup
 
-### Prerequisites
+### 1. Create a Supabase Project
 
-- Node.js 18+ and npm
-- A Vercel account (free tier works great)
+1. Go to [https://supabase.com](https://supabase.com) and sign up/login
+2. Click "New Project"
+3. Fill in project details:
+   - Name: `scrumpoker`
+   - Database Password: (generate a strong password)
+   - Region: (choose closest to you)
+4. Wait ~2 minutes for provisioning
 
-### Setup
+### 2. Set Up Database Schema
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd scrumpoker
-   ```
+1. In Supabase dashboard, go to **SQL Editor**
+2. Click **New Query**
+3. Copy and paste the contents of `supabase-schema.sql`
+4. Click **Run**
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+This creates the `sessions` table and enables real-time subscriptions.
 
-3. **Set up Upstash Redis via Vercel Marketplace**
+### 3. Enable Real-Time
 
-   **Option A: Via Vercel Dashboard (Recommended - Easiest)**
+1. Go to **Database** → **Replication**
+2. Find the `sessions` table
+3. Toggle **Real-time** to ON
 
-   1. Push your code to GitHub first (see step 1 in "Deployment to Vercel" section below)
-   2. Go to [Vercel](https://vercel.com/new) and import your repository
-   3. After deployment, go to your project
-   4. Click the "Storage" tab
-   5. Click "Connect Store"
-   6. Select "Upstash Redis" from the marketplace
-   7. Choose "Let Vercel manage my Upstash account" (simplest option)
-   8. Configure your database (name, region, plan - free tier is perfect)
-   9. Click "Connect"
-   10. Vercel will automatically inject the environment variables and redeploy
-
-   **Option B: Via Vercel CLI with Existing Upstash Account**
-   ```bash
-   # Install Vercel CLI
-   npm i -g vercel
-
-   # Login to Vercel
-   vercel login
-
-   # Link your project
-   vercel link
-
-   # Go to https://vercel.com/marketplace/upstash
-   # Install the Upstash integration
-   # Connect your existing Upstash account or create a new database
-
-   # Pull environment variables
-   vercel env pull .env.local
-   ```
-
-   **Option C: Manual Upstash Setup (For local development)**
-
-   If you want to set up a separate database for local development:
-   1. Go to [Upstash Console](https://console.upstash.com/)
-   2. Create a free account
-   3. Create a new Redis database
-   4. Copy the REST API credentials
-   5. Create `.env.local` file:
-      ```env
-      UPSTASH_REDIS_REST_URL="https://your-database.upstash.io"
-      UPSTASH_REDIS_REST_TOKEN="your-token-here"
-      ```
-
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## Deployment to Vercel
-
-### Quick Deploy (Recommended)
-
-1. **Push your code to GitHub**
-   ```bash
-   git add .
-   git commit -m "Initial commit"
-   git push
-   ```
-
-2. **Deploy to Vercel**
-   - Go to [Vercel Dashboard](https://vercel.com/new)
-   - Import your GitHub repository
-   - Vercel will auto-detect Next.js settings
-   - Click "Deploy" (initial deployment will work, but needs database connection)
-
-3. **Connect Upstash Redis from Vercel Marketplace**
-   - After deployment, go to your project
-   - Click the "Storage" tab
-   - Click "Connect Store"
-   - Select "Upstash Redis" from the marketplace
-   - Choose "Let Vercel manage my Upstash account" (easiest)
-     - OR connect your existing Upstash account
-   - Configure database settings (name, region, free plan)
-   - Click "Connect"
-   - Vercel will automatically inject environment variables and redeploy
-
-That's it! Your app is now live with a working Redis database.
-
-### Manual Deploy with CLI
+### 4. Deploy to Vercel
 
 ```bash
 # Install Vercel CLI
 npm i -g vercel
 
+# Login
+vercel login
+
+# Link to your project (or create new)
+vercel link
+
 # Deploy
 vercel --prod
 ```
 
-## Environment Variables
+### 5. Add Environment Variables to Vercel
 
-Required for the app to work:
+1. Get your Supabase credentials from **Settings** → **API**:
+   - Project URL
+   - `anon` public key
+   - `service_role` secret key
 
-```env
-UPSTASH_REDIS_REST_URL=           # Upstash Redis REST API URL
-UPSTASH_REDIS_REST_TOKEN=         # Upstash Redis REST API token
+2. Add them to Vercel:
+   ```bash
+   vercel env add NEXT_PUBLIC_SUPABASE_URL
+   vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY
+   vercel env add SUPABASE_SERVICE_ROLE_KEY
+   ```
+
+3. Redeploy:
+   ```bash
+   vercel --prod
+   ```
+
+### 6. Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Pull environment variables from Vercel
+vercel env pull .env.local
+
+# Run dev server
+npm run dev
 ```
 
-**Important Notes:**
-- These are **automatically set** when you connect Upstash Redis via Vercel Marketplace
-- For local development, either:
-  - Use `vercel env pull .env.local` to sync from your Vercel project
-  - Or create your own Upstash database at [console.upstash.com](https://console.upstash.com/) and add credentials to `.env.local`
-- The `@upstash/redis` package reads these environment variables automatically via `Redis.fromEnv()`
+Open [http://localhost:3000](http://localhost:3000)
+
+## Environment Variables
+
+The app requires these environment variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGc...
+```
+
+**Get them from**: Supabase Dashboard → Settings → API
+
+**Set them with**: `vercel env add` (see setup step 5)
+
+**Pull locally**: `vercel env pull .env.local`
 
 ## How to Use
 
 1. **Create a Session**
-   - Open the app homepage
+   - Enter your nickname
    - Click "Create New Session"
    - Share the URL with your team
 
@@ -173,13 +132,23 @@ UPSTASH_REDIS_REST_TOKEN=         # Upstash Redis REST API token
 
 3. **Vote**
    - Click on a card to vote
-   - You can change your vote anytime before reveal
-   - Others can see you voted but not your choice
+   - Change your vote anytime before reveal
+   - Others see you voted but not your choice
 
 4. **Reveal & Reset** (Creator Only)
    - Click "Reveal Votes" to show everyone's cards
    - View statistics (average, min, max)
-   - Click "Reset Round" to start a new estimation
+   - Click "Reset Round" to start new estimation
+
+## How Real-Time Works
+
+When someone votes:
+1. API route updates Supabase database (HTTP)
+2. PostgreSQL triggers a notification
+3. Supabase Realtime Server broadcasts via WebSocket
+4. All connected browsers receive update instantly
+
+No polling needed - updates are pushed when they happen!
 
 ## Project Structure
 
@@ -187,91 +156,55 @@ UPSTASH_REDIS_REST_TOKEN=         # Upstash Redis REST API token
 scrumpoker/
 ├── app/
 │   ├── api/
-│   │   └── session/
-│   │       ├── route.ts              # Create session
-│   │       └── [id]/
-│   │           ├── route.ts          # Get session
-│   │           ├── join/route.ts     # Join session
-│   │           ├── vote/route.ts     # Submit vote
-│   │           ├── reveal/route.ts   # Reveal votes
-│   │           └── reset/route.ts    # Reset round
-│   ├── session/[id]/
-│   │   └── page.tsx                  # Voting room UI
-│   ├── page.tsx                      # Landing page
-│   ├── layout.tsx                    # Root layout
-│   └── globals.css                   # Global styles
+│   │   └── session/              # API routes for session management
+│   ├── session/[id]/page.tsx     # Voting room with real-time subscriptions
+│   └── page.tsx                  # Landing page
 ├── lib/
-│   ├── types.ts                      # TypeScript types
-│   ├── redis.ts                      # Redis client wrapper
-│   └── utils.ts                      # Utility functions
-└── package.json
+│   ├── supabase.ts               # Server-side Supabase client
+│   ├── supabase-client.ts        # Browser Supabase client (with real-time)
+│   ├── types.ts                  # TypeScript types
+│   └── utils.ts                  # Utility functions
+└── supabase-schema.sql           # Database schema
 ```
-
-## Features Explained
-
-### Session Management
-- Sessions are stored in Redis with a 24-hour TTL
-- Each session has a unique ID (12-character nanoid)
-- Creator gets special permissions (reveal/reset)
-
-### Real-time Updates
-- Polling every 2 seconds when in a session
-- Lightweight approach, no WebSocket needed
-- Works reliably with serverless functions
-
-### Data Persistence
-- Upstash Redis handles all data storage
-- Sessions auto-expire after 24 hours (Redis TTL)
-- No database migrations needed
-- Fully serverless and managed
 
 ## Costs
 
 Everything runs on free tiers:
 
-- **Vercel Hosting**: Free tier includes
+- **Vercel Hosting**: Free tier
   - 100 GB bandwidth/month
   - Unlimited deployments
   - Automatic HTTPS
 
-- **Upstash Redis**: Free tier includes
-  - 10,000 commands/day
-  - 256 MB max data size
-  - Max 100 concurrent connections
-  - Perfect for small to medium teams
+- **Supabase**: Free tier
+  - 500 MB database
+  - 2 GB bandwidth
+  - 50,000 monthly active users
+  - 200 concurrent real-time connections
 
 ## Troubleshooting
 
-### "Session not found" error
+### Session not found
 - Session expired (24-hour TTL)
 - Create a new session
 
+### Real-time not working
+1. Check Realtime is enabled: Database → Replication → `sessions` table
+2. Check browser console for subscription status
+3. Verify environment variables are set
+
 ### Environment variables not working
 ```bash
-# Pull latest env vars from Vercel
+# Pull latest from Vercel
 vercel env pull .env.local
 
 # Restart dev server
 npm run dev
 ```
 
-### Redis connection errors
-- Check your Upstash environment variables are set correctly
-- Ensure Upstash Redis is connected in Vercel dashboard (Storage tab)
-- Verify the database wasn't deleted
-- For local dev, make sure you've run `vercel env pull .env.local`
-
-## Contributing
-
-Feel free to submit issues and enhancement requests!
-
 ## License
 
 MIT
-
-## Support
-
-For issues or questions, please open a GitHub issue.
 
 ---
 
