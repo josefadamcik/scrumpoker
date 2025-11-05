@@ -27,65 +27,57 @@ A simple, serverless planning poker application for agile teams. Built with Next
 
 ## Setup
 
-### 1. Create a Supabase Project
+### 1. Push Code to GitHub
 
-1. Go to [https://supabase.com](https://supabase.com) and sign up/login
-2. Click "New Project"
-3. Fill in project details:
-   - Name: `scrumpoker`
-   - Database Password: (generate a strong password)
+```bash
+git add .
+git commit -m "Initial commit"
+git push
+```
+
+### 2. Deploy to Vercel
+
+1. Go to [Vercel Dashboard](https://vercel.com/new)
+2. Import your GitHub repository
+3. Vercel will auto-detect Next.js settings
+4. Click **Deploy**
+
+The initial deployment will succeed but won't have a database yet.
+
+### 3. Connect Supabase via Vercel Marketplace
+
+1. In your Vercel project, go to the **Storage** tab
+2. Click **Connect Store**
+3. Select **Supabase** from the marketplace
+4. Choose one of the options:
+   - **Create new Supabase project** (easiest - Vercel manages it)
+   - **Connect existing Supabase account**
+5. Configure your database:
+   - Project name: `scrumpoker`
    - Region: (choose closest to you)
-4. Wait ~2 minutes for provisioning
+   - Plan: Free tier
+6. Click **Connect**
 
-### 2. Set Up Database Schema
+Vercel will automatically:
+- Provision the Supabase project (if creating new)
+- Inject environment variables into your project
+- Trigger a new deployment
 
-1. In Supabase dashboard, go to **SQL Editor**
-2. Click **New Query**
-3. Copy and paste the contents of `supabase-schema.sql`
-4. Click **Run**
+### 4. Set Up Database Schema
+
+1. Go to your Supabase dashboard (link in Vercel Storage tab)
+2. Navigate to **SQL Editor**
+3. Click **New Query**
+4. Copy and paste the contents of `supabase-schema.sql` from this repo
+5. Click **Run**
 
 This creates the `sessions` table and enables real-time subscriptions.
 
-### 3. Enable Real-Time
+### 5. Enable Real-Time
 
-1. Go to **Database** → **Replication**
-2. Find the `sessions` table
+1. In Supabase dashboard, go to **Database** → **Replication**
+2. Find the `sessions` table in the list
 3. Toggle **Real-time** to ON
-
-### 4. Deploy to Vercel
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Login
-vercel login
-
-# Link to your project (or create new)
-vercel link
-
-# Deploy
-vercel --prod
-```
-
-### 5. Add Environment Variables to Vercel
-
-1. Get your Supabase credentials from **Settings** → **API**:
-   - Project URL
-   - `anon` public key
-   - `service_role` secret key
-
-2. Add them to Vercel:
-   ```bash
-   vercel env add NEXT_PUBLIC_SUPABASE_URL
-   vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY
-   vercel env add SUPABASE_SERVICE_ROLE_KEY
-   ```
-
-3. Redeploy:
-   ```bash
-   vercel --prod
-   ```
 
 ### 6. Local Development
 
@@ -112,11 +104,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGc...
 ```
 
-**Get them from**: Supabase Dashboard → Settings → API
+**These are automatically set** when you connect Supabase via Vercel Marketplace (Step 3).
 
-**Set them with**: `vercel env add` (see setup step 5)
-
-**Pull locally**: `vercel env pull .env.local`
+**For local development**: Use `vercel env pull .env.local` to sync from Vercel.
 
 ## How to Use
 
