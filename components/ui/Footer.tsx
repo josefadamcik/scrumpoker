@@ -25,6 +25,18 @@ export function Footer() {
               alt='Buy Me a Coffee at ko-fi.com'
             />
           </a>
+
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Made by{' '}
+            <a
+              href="https://adamcik.me"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 underline decoration-dotted underline-offset-2 transition-colors"
+            >
+              Josef Adamčík
+            </a>
+          </p>
         </div>
       </div>
     </footer>
