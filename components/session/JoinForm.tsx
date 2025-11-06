@@ -11,7 +11,7 @@ interface JoinFormProps {
 
 export function JoinForm({ nickname, joining, onNicknameChange, onSubmit }: JoinFormProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-16">
       <div className="max-w-md w-full mx-4">
         <Card className="p-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
