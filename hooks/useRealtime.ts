@@ -37,6 +37,7 @@ export function useRealtime(
               participants: updated.participants,
               revealed: updated.revealed,
               creatorId: updated.creator_id,
+              voteHistory: updated.vote_history,
             });
           }
         }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkBotId } from 'botid/server';
 import { getSession, setSession } from '@/lib/supabase';
+import { VoteRecord, RoundHistory } from '@/lib/types';
 
 export async function POST(
   request: Request,
@@ -24,6 +25,29 @@ export async function POST(
         { error: 'Session not found' },
         { status: 404 }
       );
+    }
+
+    // Save current round to history before revealing
+    const votes: VoteRecord[] = Object.entries(session.participants)
+      .filter(([_, participant]) => participant.vote !== null)
+      .map(([participantId, participant]) => ({
+        participantId,
+        nickname: participant.nickname,
+        vote: participant.vote!,
+      }));
+
+    // Only add to history if there are votes
+    if (votes.length > 0) {
+      const voteHistory = session.voteHistory || [];
+      const roundNumber = voteHistory.length + 1;
+
+      const newRound: RoundHistory = {
+        roundNumber,
+        revealedAt: Date.now(),
+        votes,
+      };
+
+      session.voteHistory = [...voteHistory, newRound];
     }
 
     session.revealed = true;

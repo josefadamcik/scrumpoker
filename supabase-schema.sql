@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS sessions (
   participants JSONB NOT NULL DEFAULT '{}'::jsonb,
   revealed BOOLEAN NOT NULL DEFAULT false,
   creator_id TEXT NOT NULL,
-  expires_at TIMESTAMPTZ NOT NULL
+  expires_at TIMESTAMPTZ NOT NULL,
+  vote_history JSONB DEFAULT '[]'::jsonb
 );
 
 -- Enable Row Level Security (RLS)

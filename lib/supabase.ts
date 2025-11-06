@@ -16,6 +16,7 @@ export interface SessionRow {
   revealed: boolean;
   creator_id: string;
   expires_at: string;
+  vote_history?: any;
 }
 
 export async function getSession(sessionId: string): Promise<Session | null> {
@@ -43,6 +44,7 @@ export async function getSession(sessionId: string): Promise<Session | null> {
       participants: data.participants,
       revealed: data.revealed,
       creatorId: data.creator_id,
+      voteHistory: data.vote_history,
     };
   } catch (error) {
     console.error('Error getting session:', error);
@@ -61,6 +63,7 @@ export async function setSession(sessionId: string, session: Session): Promise<v
       revealed: session.revealed,
       creator_id: session.creatorId,
       expires_at: expiresAt,
+      vote_history: session.voteHistory,
     };
 
     const { error } = await supabase
